@@ -1,4 +1,4 @@
-package com.chebdowski.tddtechnologyconversations;
+package com.chebdowski.katatddstringcalc;
 
 import org.junit.Test;
 
