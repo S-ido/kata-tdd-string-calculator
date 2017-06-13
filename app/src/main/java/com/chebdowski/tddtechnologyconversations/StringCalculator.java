@@ -10,7 +10,7 @@ import java.util.stream.Stream;
  */
 
 public class StringCalculator {
-    public static final int add(String numbers) {
+    public static int add(String numbers) {
         String delimiters = ",|\n";
 
         if (numbers.startsWith("//")) {
@@ -22,21 +22,21 @@ public class StringCalculator {
         return add(numbers, delimiters);
     }
 
-    private static final String getDelimiters(String value) {
-        String delimiters = "";
+    private static String getDelimiters(String value) {
+        StringBuilder delimiters = new StringBuilder();
         String delimiterString = value.substring(2, value.indexOf("\n"));
 
         do {
             String del = delimiterString.substring(delimiterString.indexOf("[") + 1, delimiterString.indexOf("]"));
-            delimiters += "|";
-            delimiters += del;
+            delimiters.append("|");
+            delimiters.append(del);
             delimiterString = delimiterString.substring(delimiterString.indexOf("]")+1);
         } while (delimiterString.contains("]"));
 
-        return delimiters;
+        return delimiters.toString();
     }
 
-    private static final int add(String numbers, String delimiter) {
+    private static int add(String numbers, String delimiter) {
         int value = 0;
 
         String stringNumbers[] = numbers.split(delimiter);
@@ -45,7 +45,7 @@ public class StringCalculator {
         if (stringNumbers.length > 0) {
             value = Stream.of(stringNumbers)
                     .filter(s -> !s.equals(""))
-                    .map(s -> Integer.parseInt(s))
+                    .map(Integer::parseInt)
                     .filter(i -> i < 1000)
                     .reduce(0, Integer::sum);
         }
@@ -53,19 +53,19 @@ public class StringCalculator {
         return value;
     }
 
-    private static final void checkForNegativeNumbers(String stringNumbers[]) {
+    private static void checkForNegativeNumbers(String stringNumbers[]) {
         List<Integer> negativeNumbers = new ArrayList();
 
         Stream.of(stringNumbers)
                 .filter(s -> !s.equals(""))
-                .map(s -> Integer.parseInt(s))
+                .map(Integer::parseInt)
                 .filter(i -> i < 0)
                 .forEach(negativeNumbers::add);
 
         if (negativeNumbers.size() > 0) {
             String message = "Negatives not allowed: ";
             String commaSeparatedNumbers = negativeNumbers.stream()
-                    .map(i -> i.toString())
+                    .map(Object::toString)
                     .collect(Collectors.joining(", ", "[", "]"));
             throw new RuntimeException(message + commaSeparatedNumbers);
         }
